@@ -30,11 +30,11 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->profile()
             ->colors([
-                'primary' => Color::Teal,
+                'primary' => Color::GoldTips,
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
-                'info' => Color::Blue,
-                'success' => Color::Emerald,
+                'info' => Color::Keppel,
+                'success' => Color::GrannySmithApple,
                 'warning' => Color::Orange,
             ])
             ->font('Comic Neue')
