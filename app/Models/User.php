@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function canAccessFilament(): bool
+    {
+        return str_ends_with($this->email, '@travel.com');
+    }
 }
