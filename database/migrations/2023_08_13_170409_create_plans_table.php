@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('price');
+            $table->boolean('status')->default(false);
             $table->integer('count_of_users');
             $table->integer('count_of_groups');
             $table->integer('count_of_travels');

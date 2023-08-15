@@ -20,5 +20,6 @@ class Plan extends Model
         'count_of_tracks',
         'count_of_documents',
         'type_of_calk',
+        'status',
     ];
 }

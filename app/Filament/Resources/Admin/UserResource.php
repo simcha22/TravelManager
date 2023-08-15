@@ -4,9 +4,12 @@ namespace App\Filament\Resources\Admin;
 
 use App\Filament\Resources\Admin\UserResource\Pages;
 use App\Filament\Resources\Admin\UserResource\RelationManagers;
+use App\Models\City;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,21 +22,73 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
 
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationGroup = 'ManageUsers';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->required()
-                    ->email()
-                    ->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('password')
-                    ->required()->password(),
-                Forms\Components\Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->multiple(),
+                Forms\Components\Tabs::make()->tabs([
+                    Forms\Components\Tabs\Tab::make('User data')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->required(),
+                            Forms\Components\TextInput::make('email')
+                                ->required()
+                                ->email()
+                                ->unique(ignoreRecord: true),
+//                            Forms\Components\TextInput::make('password')
+//                                ->required()
+//                                ->password(),
+                        ]),
+                    Forms\Components\Tabs\Tab::make('Roles')
+                        ->schema([
+                            Forms\Components\Select::make('roles')
+                                ->relationship('roles', 'name')
+                                ->multiple(),
+                        ]),
+                    Forms\Components\Tabs\Tab::make('Profile Data')
+                        ->schema([
+                            Forms\Components\Fieldset::make('profile')
+                                ->relationship('profile')
+                                ->schema([
+                                    Forms\Components\TextInput::make('first_name')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('last_name')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('email')
+                                        ->required()
+                                        ->email()
+                                        ->unique(ignoreRecord: true),
+                                    Forms\Components\TextInput::make('phone')
+                                        ->required()->tel(),
+                                    Forms\Components\Select::make('country_id')
+                                        ->relationship('country', 'name')
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(),
+                                    Forms\Components\Select::make('city_id')
+                                        ->relationship('city', 'name')
+                                        ->options(function (Forms\Get $get) {
+                                            if (!$get('country_id')) {
+                                                return [];
+                                            }
+                                            return City::where('country_id', $get('country_id'))->pluck('name', 'id')->toArray();
+                                        })->live()
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(),
+                                    Forms\Components\TextInput::make('address')
+                                        ->required(),
+                                    Forms\Components\Select::make('plan_id')
+                                        ->relationship('plan', 'name')
+                                        ->required(),
+                                ]),
+
+                        ])
+                ])->columnSpanFull()
             ]);
     }
 
@@ -56,6 +111,7 @@ class UserResource extends Resource
 
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
@@ -83,6 +139,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
@@ -92,6 +149,47 @@ class UserResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('User Data')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('email')
+                            ->icon('heroicon-m-envelope'),
+                        Infolists\Components\TextEntry::make('roles.name')->badge(),
+                        Infolists\Components\TextEntry::make('roles.permissions.name')
+                            ->label('Permissions')
+                            ->badge(),
+                    ])->columns(4),
+                Infolists\Components\Split::make([
+                    Infolists\Components\Section::make('Profile Data')
+                        ->description('User profile data')
+                        ->schema([
+                            Infolists\Components\TextEntry::make('profile.first_name')->label('First Name'),
+                            Infolists\Components\TextEntry::make('profile.last_name')->label('Last Name'),
+                            Infolists\Components\TextEntry::make('profile.email')
+                                ->label('Email')
+                                ->icon('heroicon-m-envelope'),
+                            Infolists\Components\TextEntry::make('profile.phone')
+                                ->icon('heroicon-s-phone')
+                                ->label('Phone'),
+                            Infolists\Components\TextEntry::make('profile.country.name')
+                                ->label('Country')
+                                ->icon('heroicon-s-building-office-2'),
+                            Infolists\Components\TextEntry::make('profile.city.name')
+                                ->label('City')
+                                ->icon('heroicon-s-building-office-2'),
+                            Infolists\Components\TextEntry::make('profile.address')
+                                ->label('Address')
+                            ->icon('heroicon-s-building-office-2'),
+                            Infolists\Components\TextEntry::make('profile.plan.name')->label('Plan')->badge(),
+                        ])->columns(4),
+                ])->columnSpanFull()->from('xl')
             ]);
     }
 }

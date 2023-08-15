@@ -20,7 +20,9 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->foreignId('user_id')->constrained();
+            $table->string('address');
             $table->foreignId('plan_id')->constrained();
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,6 +16,12 @@ class Profile extends Model
         'last_name',
         'email',
         'phone',
+        'status',
+        'plan_id',
+        'country_id',
+        'city_id',
+        'user_id',
+        'address',
     ];
 
     public function country() : BelongsTo
