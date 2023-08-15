@@ -48,6 +48,8 @@ class AdminPanelProvider extends PanelProvider
 //                Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
 //            ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -61,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
     }
 }

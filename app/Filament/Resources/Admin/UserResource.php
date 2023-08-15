@@ -7,14 +7,18 @@ use App\Filament\Resources\Admin\UserResource\RelationManagers;
 use App\Models\City;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
@@ -25,6 +29,8 @@ class UserResource extends Resource
     protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationGroup = 'ManageUsers';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -54,15 +60,15 @@ class UserResource extends Resource
                             Forms\Components\Fieldset::make('profile')
                                 ->relationship('profile')
                                 ->schema([
-                                    Forms\Components\TextInput::make('first_name')
+                                    TextInput::make('first_name')
                                         ->required(),
-                                    Forms\Components\TextInput::make('last_name')
+                                    TextInput::make('last_name')
                                         ->required(),
-                                    Forms\Components\TextInput::make('email')
+                                    TextInput::make('email')
                                         ->required()
                                         ->email()
                                         ->unique(ignoreRecord: true),
-                                    Forms\Components\TextInput::make('phone')
+                                    TextInput::make('phone')
                                         ->required()->tel(),
                                     Forms\Components\Select::make('country_id')
                                         ->relationship('country', 'name')
@@ -113,8 +119,33 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('changePassword')
+                    ->form([
+                        TextInput::make('new_password')
+                            ->password()
+                            ->label('New Password')
+                            ->required()
+                            ->rule(Password::default()),
+                        TextInput::make('new_password_confirmation')
+                            ->password()
+                            ->label('Confirm New Password')
+                            ->required()
+                            ->same('new_password')
+                            ->rule(Password::default())
+                    ])->icon('heroicon-m-arrow-path')
+                    ->color('info')
+                    ->action(function(User $record, Array $data){
+                        $record->update([
+                            'password' => Hash::make($data['new_password'])
+                        ]);
+
+                        Notification::make()
+                            ->title('New Password Saved successfully')
+                            ->sendToDatabase($record);
+                    }),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -150,6 +181,11 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email'];
     }
 
     public static function infolist(Infolist $infolist): Infolist

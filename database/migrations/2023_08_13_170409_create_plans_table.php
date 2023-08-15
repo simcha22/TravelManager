@@ -22,7 +22,9 @@ return new class extends Migration
             $table->integer('count_of_advertisements');
             $table->integer('count_of_tracks');
             $table->integer('count_of_documents');
-            $table->enum('type_of_calk',['monthly', 'yearly', 'lifetime']);
+            $table->integer('count_of_notifications');
+            $table->integer('count_of_travel_operations');
+            $table->enum('type_of_calk',['monthly', 'yearly', 'lifetime','experience']);
             $table->timestamps();
             $table->softDeletes();
         });
