@@ -134,7 +134,7 @@ class UserResource extends Resource
                             ->rule(Password::default())
                     ])->icon('heroicon-m-arrow-path')
                     ->color('info')
-                    ->action(function(User $record, Array $data){
+                    ->action(function (User $record, array $data) {
                         $record->update([
                             'password' => Hash::make($data['new_password'])
                         ]);
@@ -222,7 +222,7 @@ class UserResource extends Resource
                                 ->icon('heroicon-s-building-office-2'),
                             Infolists\Components\TextEntry::make('profile.address')
                                 ->label('Address')
-                            ->icon('heroicon-s-building-office-2'),
+                                ->icon('heroicon-s-building-office-2'),
                             Infolists\Components\TextEntry::make('profile.plan.name')->label('Plan')->badge(),
                         ])->columns(4),
                 ])->columnSpanFull()->from('xl')
