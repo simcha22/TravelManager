@@ -26,7 +26,8 @@ class PermissionSeeder extends Seeder
         $resources = [
             'user',
             'profile',
-            'plan'
+            'plan',
+            'travel',
         ];
 
         collect($resources)
