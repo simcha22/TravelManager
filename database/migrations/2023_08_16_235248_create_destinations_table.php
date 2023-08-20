@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('order');
-            $table->foreignId('travel_id')->constrained();
+            $table->foreignId('travel_id')->constrained('travels', 'id');
             $table->foreignId('country_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->string('address');

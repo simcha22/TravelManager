@@ -45,3 +45,7 @@ add the liens
         950 => '#0a2928',
     ];
 ```
+
+```shell
+composer require codeat3/blade-forkawesome
+```

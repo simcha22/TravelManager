@@ -45,9 +45,10 @@ class UserResource extends Resource
                                 ->required()
                                 ->email()
                                 ->unique(ignoreRecord: true),
-//                            Forms\Components\TextInput::make('password')
-//                                ->required()
-//                                ->password(),
+                            Forms\Components\TextInput::make('password')
+                                ->required()
+                                ->visibleOn('create')
+                                ->password(),
                         ]),
                     Forms\Components\Tabs\Tab::make('Roles')
                         ->schema([
@@ -70,6 +71,15 @@ class UserResource extends Resource
                                         ->unique(ignoreRecord: true),
                                     TextInput::make('phone')
                                         ->required()->tel(),
+                                    Forms\Components\DatePicker::make('birthday')
+                                        ->required()->maxDate(now()),
+                                    Forms\Components\Radio::make('gender')
+                                        ->options([
+                                            'male' => 'Male',
+                                            'female' => 'Female',
+                                            'other' => 'Other',
+                                        ])
+                                        ->required(),
                                     Forms\Components\Select::make('country_id')
                                         ->relationship('country', 'name')
                                         ->searchable()

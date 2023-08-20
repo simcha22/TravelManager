@@ -22,6 +22,8 @@ class Profile extends Model
         'city_id',
         'user_id',
         'address',
+        'birthday',
+        'gender'
     ];
 
     public function country() : BelongsTo

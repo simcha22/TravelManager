@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->integer('phone');
+            $table->date('birthday');
+            $table->enum('gender',['male', 'female', 'other']);
             $table->foreignId('country_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->foreignId('user_id')->constrained();
