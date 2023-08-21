@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('flight_companies', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('code');
             $table->timestamps();
         });
     }

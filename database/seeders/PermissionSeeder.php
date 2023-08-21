@@ -28,6 +28,7 @@ class PermissionSeeder extends Seeder
             'profile',
             'plan',
             'travel',
+            'flight'
         ];
 
         collect($resources)

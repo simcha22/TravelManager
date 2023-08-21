@@ -18,9 +18,9 @@ class TravelResource extends Resource
 {
     protected static ?string $model = Travel::class;
 
-    protected static ?string $navigationIcon = 'forkawesome-plane';
+    protected static ?string $navigationIcon = 'forkawesome-train';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 8;
 
     protected static ?string $navigationGroup = 'ManageTravels';
 
@@ -43,7 +43,8 @@ class TravelResource extends Resource
                                 ->onIcon('heroicon-m-check')
                                 ->offIcon('heroicon-o-x-mark'),
                             Forms\Components\Select::make('user_id')
-                                ->relationship('user', 'name')->required(),
+                                ->relationship('user', 'name')
+                                ->required(),
                         ]),
                     Forms\Components\Wizard\Step::make('Travel Time')
                         ->schema([

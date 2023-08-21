@@ -19,7 +19,7 @@ class DestinationResource extends Resource
 
     protected static ?string $navigationIcon = 'forkawesome-map-signs';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 10;
 
     protected static ?string $navigationGroup = 'ManageTravels';
 
