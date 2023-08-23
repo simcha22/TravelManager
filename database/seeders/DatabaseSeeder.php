@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         $this->call([
-            //AirportSeeder::class
-            PermissionSeeder::class,
-            RoleSeeder::class,
-            UserSeeder::class,
-            PlanSeeder::class,
-            CountrySeeder::class,
+            AirportSeeder::class
+            //PermissionSeeder::class,
+            //RoleSeeder::class,
+            //UserSeeder::class,
+            //PlanSeeder::class,
+            //CountrySeeder::class,
         ]);
     }
 }

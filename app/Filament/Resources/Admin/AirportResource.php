@@ -29,13 +29,12 @@ class AirportResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required(),
-                Forms\Components\TextInput::make('code')
+                Forms\Components\TextInput::make('iata_code')
                     ->required(),
                 Forms\Components\Select::make('country_id')
                     ->relationship('country', 'name')
                     ->searchable()
-                    ->preload()
-                    ->required(),
+                    ->preload(),
                 Forms\Components\Select::make('city_id')
                     ->relationship('city', 'name')
                     ->options(function (Forms\Get $get) {
@@ -45,8 +44,7 @@ class AirportResource extends Resource
                         return City::where('country_id', $get('country_id'))->pluck('name', 'id')->toArray();
                     })->live()
                     ->searchable()
-                    ->preload()
-                    ->required(),
+                    ->preload(),
             ]);
     }
 
@@ -55,13 +53,47 @@ class AirportResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('code')
+                Tables\Columns\TextColumn::make('iata_code')
+                    ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('icao_code')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('location')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('postal_code')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('country.name')
+                    ->badge()
+                    ->color('success')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('city.name')
+                    ->badge()
+                    ->color('success')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('latitude')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('longitude')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('website')
+                    ->copyable()
+                    ->copyableState(fn (string $state): string => "{$state}")
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

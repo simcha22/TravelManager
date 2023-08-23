@@ -39,7 +39,13 @@ class CountryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('currency')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('iso2'),
+                Tables\Columns\TextColumn::make('iso3'),
                 Tables\Columns\TextColumn::make('city.name')
+                    ->label('cities')
                     ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
