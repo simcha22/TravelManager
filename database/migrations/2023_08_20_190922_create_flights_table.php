@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('flights', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->foreignId('flight_company_id')->constrained('flight_companies', 'id');
+            $table->foreignId('airline_id')->constrained('airlines', 'id');
             $table->foreignId('airport_from_id')->constrained('airports', 'id');
             $table->foreignId('airport_to_id')->constrained('airports', 'id');
             $table->dateTime('start_time');

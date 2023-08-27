@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Admin;
 
 use App\Filament\Resources\Admin\FlightResource\Pages;
 use App\Filament\Resources\Admin\FlightResource\RelationManagers;
+use App\Models\Airport;
 use App\Models\Flight;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class FlightResource extends Resource
 {
@@ -32,14 +34,24 @@ class FlightResource extends Resource
                         ->schema([
                             Forms\Components\Select::make('airport_from_id')
                                 ->label('From Airport')
-                                ->relationship('airportFrom', 'name')
                                 ->required()
-                                ->searchable(),
+                                ->relationship(
+                                    name: 'airportFrom',
+                                    titleAttribute: 'name',
+                                    modifyQueryUsing: fn(Builder $query) => $query->orderBy('name')->orderBy('iata_code'),
+                                )
+                                ->getOptionLabelFromRecordUsing(fn(Airport $record) => "{$record->iata_code} {$record->name}")
+                                ->searchable(['name', 'iata_code']),
                             Forms\Components\Select::make('airport_to_id')
                                 ->label('To Airport')
-                                ->relationship('airportTo', 'name')
                                 ->required()
-                                ->searchable(),
+                                ->relationship(
+                                    name: 'airportTo',
+                                    titleAttribute: 'name',
+                                    modifyQueryUsing: fn(Builder $query) => $query->orderBy('name')->orderBy('iata_code'),
+                                )
+                                ->getOptionLabelFromRecordUsing(fn(Airport $record) => "{$record->iata_code} {$record->name}")
+                                ->searchable(['name', 'iata_code']),
                             Forms\Components\DateTimePicker::make('start_time')
                                 ->label('Departure')
                                 ->native(false)
@@ -62,8 +74,8 @@ class FlightResource extends Resource
                         ])->columns(2),
                     Forms\Components\Wizard\Step::make('More Details')
                         ->schema([
-                            Forms\Components\Select::make('flight_company_id')
-                                ->relationship('flightCompany', 'name')
+                            Forms\Components\Select::make('airline_id')
+                                ->relationship('airline', 'name')
                                 ->required()
                                 ->searchable(),
                             Forms\Components\Radio::make('type')
@@ -89,33 +101,35 @@ class FlightResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('flightCompany.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('airportFrom.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('airportTo.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('travel.name')
+                    ->badge()->color('gray')
+                    ->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('airline.name')
+                    ->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('airportFrom.name')
+                    ->label(new HtmlString('Departure<br>Airport'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('airportTo.name')
+                    ->label(new HtmlString('Landing<br>Airport'))
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('start_time')
+                    ->label(new HtmlString('Departure<br>Time'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
+                    ->label(new HtmlString('Landing<br>Time'))
                     ->dateTime()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->searchable(),
+                    ->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('place')
-                    ->searchable(),
+                    ->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -126,10 +140,35 @@ class FlightResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\Filter::make('start_time')
+                    ->form([
+                        Forms\Components\DatePicker::make('start_time'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['start_time'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('start_time', '>=', $date),
+                            );
+                    }),
+                Tables\Filters\Filter::make('end_time')
+                    ->form([
+                        Forms\Components\DatePicker::make('end_time'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['end_time'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('end_time', '>=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

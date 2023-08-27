@@ -14,7 +14,7 @@ class Flight extends Model
     protected $fillable = [
         'code',
         'travel_id',
-        'flight_company_id',
+        'airline_id',
         'airport_from_id',
         'airport_to_id',
         'start_time',
@@ -29,9 +29,9 @@ class Flight extends Model
         return $this->belongsTo(Travel::class);
     }
 
-    public function flightCompany() : BelongsTo
+    public function airline() : BelongsTo
     {
-        return $this->belongsTo(FlightCompany::class);
+        return $this->belongsTo(Airline::class);
     }
 
     public function airportFrom() : BelongsTo

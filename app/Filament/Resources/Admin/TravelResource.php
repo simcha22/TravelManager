@@ -78,6 +78,8 @@ class TravelResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -161,6 +163,7 @@ class TravelResource extends Resource
         return [
             RelationManagers\DestinationRelationManager::class,
             RelationManagers\TravelerRelationManager::class,
+            RelationManagers\FlightRelationManager::class,
         ];
     }
 

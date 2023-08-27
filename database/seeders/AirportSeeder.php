@@ -34,9 +34,8 @@ class AirportSeeder extends Seeder
 
     public function arrayData(): array
     {
-        // 'A',
-        return ['B'];
-        //return ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        return ['Q'];
+        //return ['A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     }
 
     public function createAirport($data): void
@@ -44,8 +43,6 @@ class AirportSeeder extends Seeder
         $airport = $this->getMoreInfo($data['0']);
 
         if (array_key_exists('error', $airport)) {
-            info($airport['error']);
-
             Airport::create([
                 'name' => $data['2'],
                 'iata_code' => $data['0'],

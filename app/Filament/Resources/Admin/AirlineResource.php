@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Admin;
 
-use App\Filament\Resources\Admin\FlightCompanyResource\Pages;
-use App\Filament\Resources\Admin\FlightCompanyResource\RelationManagers;
-use App\Models\FlightCompany;
+use App\Filament\Resources\Admin\AirlineResource\Pages;
+use App\Filament\Resources\Admin\AirlineResource\RelationManagers;
+use App\Models\Airline;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,16 +13,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class FlightCompanyResource extends Resource
+class AirlineResource extends Resource
 {
-    protected static ?string $model = FlightCompany::class;
+    protected static ?string $model = Airline::class;
 
-    protected static ?string $navigationIcon = 'forkawesome-flag-checkered';
+    protected static ?string $navigationIcon = 'forkawesome-rocket';
 
-    protected static ?string $navigationGroup = 'ManageAddress';
+    protected static ?int $navigationSort = 10;
 
-    protected static ?int $navigationSort = 7;
-
+    protected static ?string $navigationGroup = 'ManageTravels';
     public static function form(Form $form): Form
     {
         return $form
@@ -30,6 +29,7 @@ class FlightCompanyResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('code')
+                    ->label('Airline Code')
                     ->required(),
             ]);
     }
@@ -39,9 +39,9 @@ class FlightCompanyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -52,13 +52,15 @@ class FlightCompanyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
@@ -69,7 +71,7 @@ class FlightCompanyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageFlightCompanies::route('/'),
+            'index' => Pages\ManageAirlines::route('/'),
         ];
     }
 }
