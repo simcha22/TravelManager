@@ -46,4 +46,9 @@ class Travel extends Model
     {
         return $this->hasMany(Flight::class);
     }
+
+    public function attraction() :HasMany
+    {
+        return $this->hasMany(Attraction::class);
+    }
 }

@@ -18,7 +18,7 @@ class AirportResource extends Resource
 {
     protected static ?string $model = Airport::class;
 
-    protected static ?string $navigationIcon = 'forkawesome-globe';
+    protected static ?string $navigationIcon = 'gmdi-connecting-airports';
 
     protected static ?string $navigationGroup = 'ManageAddress';
 
@@ -52,7 +52,7 @@ class AirportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('fullName')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('iata_code')

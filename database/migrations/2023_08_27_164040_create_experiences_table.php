@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attractions', function (Blueprint $table) {
+        Schema::create('experiences', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->time('opening_time');
             $table->time('closing_time');
-            $table->date('preferred_visiting_day')->nullable();
-            $table->time('preferred_visiting_time')->nullable();
-            $table->integer('visiting_hours')->nullable();
+            $table->time('preferred_visiting_time');
+            $table->integer('visiting_minutes');
             $table->text('description');
-            $table->foreignId('city_id')->nullable()->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('travel_id')->constrained('travels', 'id');
+            $table->foreignId('attraction_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attractions');
+        Schema::dropIfExists('experiences');
     }
 };

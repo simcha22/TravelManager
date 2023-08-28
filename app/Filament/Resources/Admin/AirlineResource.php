@@ -17,11 +17,11 @@ class AirlineResource extends Resource
 {
     protected static ?string $model = Airline::class;
 
-    protected static ?string $navigationIcon = 'forkawesome-rocket';
+    protected static ?string $navigationIcon = 'gmdi-airlines-r';
 
     protected static ?int $navigationSort = 10;
 
-    protected static ?string $navigationGroup = 'ManageTravels';
+    protected static ?string $navigationGroup = 'ManageAddress';
     public static function form(Form $form): Form
     {
         return $form

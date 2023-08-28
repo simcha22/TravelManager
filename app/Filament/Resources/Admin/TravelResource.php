@@ -7,6 +7,8 @@ use App\Filament\Resources\Admin\TravelResource\RelationManagers;
 use App\Models\Travel;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +20,7 @@ class TravelResource extends Resource
 {
     protected static ?string $model = Travel::class;
 
-    protected static ?string $navigationIcon = 'forkawesome-train';
+    protected static ?string $navigationIcon = 'gmdi-card-travel-o';
 
     protected static ?int $navigationSort = 8;
 
@@ -142,6 +144,7 @@ class TravelResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
@@ -164,6 +167,7 @@ class TravelResource extends Resource
             RelationManagers\DestinationRelationManager::class,
             RelationManagers\TravelerRelationManager::class,
             RelationManagers\FlightRelationManager::class,
+            RelationManagers\AttractionRelationManager::class,
         ];
     }
 
@@ -173,6 +177,7 @@ class TravelResource extends Resource
             'index' => Pages\ListTravel::route('/'),
             'create' => Pages\CreateTravel::route('/create'),
             'edit' => Pages\EditTravel::route('/{record}/edit'),
+            'view' => Pages\viewTravel::route('/{record}'),
         ];
     }
 
@@ -181,6 +186,31 @@ class TravelResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Travel Data')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('user.name'),
+                        Infolists\Components\TextEntry::make('description')
+                            ->html()->columns(2),
+                    ])->columns(4),
+                Infolists\Components\Section::make('Travel Times')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('start_time')
+                        ->dateTime(),
+                        Infolists\Components\TextEntry::make('end_time')
+                        ->dateTime(),
+                        Infolists\Components\TextEntry::make('count_of_travelers'),
+                        Infolists\Components\TextEntry::make('count_of_targets'),
+                        Infolists\Components\TextEntry::make('number_of_days'),
+                        Infolists\Components\TextEntry::make('status'),
+                    ])->columns(4),
             ]);
     }
 }

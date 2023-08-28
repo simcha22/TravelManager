@@ -108,10 +108,10 @@ class FlightResource extends Resource
                     ->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('airline.name')
                     ->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('airportFrom.name')
+                Tables\Columns\TextColumn::make('airportFrom.fullName')
                     ->label(new HtmlString('Departure<br>Airport'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('airportTo.name')
+                Tables\Columns\TextColumn::make('airportTo.fullName')
                     ->label(new HtmlString('Landing<br>Airport'))
                     ->numeric()
                     ->sortable(),
