@@ -35,15 +35,12 @@ class AttractionResource extends Resource
                                 ->required(),
                             Forms\Components\RichEditor::make('description')
                                 ->required(),
+                            Forms\Components\TextInput::make('address')
+                                ->required(),
                             Forms\Components\Select::make('user_id')
                                 ->relationship('user', 'name')
                                 ->searchable()
                                 ->required(),
-//                            Forms\Components\Select::make('city_id')
-//                                ->relationship('city', 'name')
-//                                ->live()
-//                                ->searchable()
-//                                ->preload(),
                             Forms\Components\Select::make('travel_id')
                                 ->relationship('travel', 'name')
                                 ->searchable()
@@ -87,6 +84,8 @@ class AttractionResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('address')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('travel.name')
                     ->sortable()

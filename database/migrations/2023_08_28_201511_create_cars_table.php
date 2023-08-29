@@ -10,15 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('stays', function (Blueprint $table) {
+        Schema::create('cars', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
+            $table->string('name')->comment('Car Rental name');
+            $table->string('address')->comment('Car Rental address');
+            $table->text('description');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('travel_id')->constrained('travels', 'id');
-            $table->text('description');
-            $table->dateTime('check_in');
-            $table->dateTime('check_out');
+            $table->time('opening_time');
+            $table->time('closing_time');
+            $table->dateTime('Preferred_arriving_time')->nullable();
+            $table->dateTime('Preferred_returning_time')->nullable();
             $table->integer('number_of_days');
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('stays');
+        Schema::dropIfExists('cars');
     }
 };

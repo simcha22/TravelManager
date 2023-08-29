@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Stay extends Model
+class Car extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -17,8 +17,10 @@ class Stay extends Model
         'description',
         'user_id',
         'travel_id',
-        'check_in',
-        'check_out',
+        'opening_time',
+        'closing_time',
+        'Preferred_arriving_time',
+        'Preferred_returning_time',
         'number_of_days'
     ];
 

@@ -20,7 +20,7 @@ class Attraction extends Model
         'preferred_visiting_time',
         'visiting_hours',
         'description',
-        'city_id',
+        'address',
         'user_id',
         'travel_id',
     ];
@@ -33,11 +33,6 @@ class Attraction extends Model
     public function travel(): BelongsTo
     {
         return $this->belongsTo(Travel::class);
-    }
-
-    public function city(): BelongsTo
-    {
-        return $this->belongsTo(City::class);
     }
 
     public function experience(): HasMany

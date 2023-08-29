@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,7 +19,7 @@ return new class extends Migration
             $table->time('preferred_visiting_time')->nullable();
             $table->integer('visiting_hours')->nullable();
             $table->text('description');
-            $table->foreignId('city_id')->nullable()->constrained();
+            $table->string('address');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('travel_id')->constrained('travels', 'id');
             $table->timestamps();
